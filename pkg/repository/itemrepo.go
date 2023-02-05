@@ -229,3 +229,41 @@ func (i *ItemRepo) DeleteData(id string) (model.Item, error) {
 		return falseItem, errs
 	}
 }
+
+func (i *ItemRepo) GetAllData() ([]model.Item, error) {
+	var allData []model.Item
+	var myModel model.Item
+
+	myQuery := `SELECT * FROM "Item"`
+
+	getDatas, err := i.Item.Query(myQuery)
+
+	if err != nil {
+		// error happen
+		log.Println(err)
+		return allData, err
+	}
+
+	for getDatas.Next() {
+		var getItemId string
+		var getItemName string
+		var getItemPrice string
+		var getItemDate string
+
+		e := getDatas.Scan(&getItemId, &getItemName, &getItemPrice, &getItemDate)
+
+		if e != nil {
+			log.Println(e)
+			return allData, err
+		}
+
+		myModel.SetItemId(getItemId)
+		myModel.SetItemName(getItemName)
+		myModel.SetItemPrice(getItemPrice)
+		myModel.SetItemDate(getItemDate)
+
+		allData = append(allData, myModel)
+	}
+
+	return allData, nil
+}
