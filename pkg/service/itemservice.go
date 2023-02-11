@@ -321,3 +321,140 @@ func (s *ItemService) UpdateItemByDate(date string, item model.Item) (model.Item
 		return getItem, errs
 	}
 }
+
+func (s *ItemService) DeleteItemById(id string) (model.Item, error) {
+	// make variable to keep file
+	var getItem model.Item
+	var err error
+
+	// delete item using id
+	getItem, err = s.ItemRepo.DeleteData(id)
+
+	if err != nil {
+		log.Println(err)
+		return getItem, err
+	} else {
+		return getItem, nil
+	}
+}
+
+func (s *ItemService) DeleteItemByName(name string) (model.Item, error) {
+	// make variable
+	var allItem []model.Item
+	var getItem model.Item
+	var err error
+
+	// make algorithm to get id using name
+	var getId string
+
+	allItem, err = s.ItemRepo.GetAllData()
+
+	if err != nil {
+		log.Println(err)
+		return getItem, err
+	}
+	check := false
+	for _, item := range allItem {
+		if name == item.GetItemName() {
+			getId = item.GetItemId()
+			check = true
+			break
+		}
+	}
+
+	if check {
+		// if item founded
+		getItem, err = s.ItemRepo.DeleteData(getId)
+		if err != nil {
+			log.Println(err)
+			return getItem, err
+		} else {
+			return getItem, nil
+		}
+	} else {
+		errs := errors.New("getting error when deleting data using name")
+		return getItem, errs
+	}
+}
+
+func (s *ItemService) DeleteItemByPrice(price string) (model.Item, error) {
+	// make variable
+	var allItem []model.Item
+	var getItem model.Item
+	var err error
+
+	// make algorithm to get user id by price
+	var getId string
+
+	allItem, err = s.ItemRepo.GetAllData()
+
+	if err != nil {
+		log.Println(err)
+		return getItem, err
+	}
+
+	check := false
+
+	for _, item := range allItem {
+		if price == item.GetItemPrice() {
+			check = true
+			getId = item.GetItemId()
+			break
+		}
+	}
+
+	if check {
+		// if item with certain price founded
+		getItem, err = s.ItemRepo.DeleteData(getId)
+		if err != nil {
+			log.Println(err)
+			return getItem, err
+		} else {
+			return getItem, nil
+		}
+	} else {
+		// item no founded
+		errs := errors.New("errro when deleting data using price")
+		return getItem, errs
+	}
+}
+
+func (s *ItemService) DeleteItemUsingDate(date string) (model.Item, error) {
+	// make variable
+	var allItem []model.Item
+	var getItem model.Item
+	var err error
+
+	// make logic to get id based on date
+	var getId string
+
+	allItem, err = s.ItemRepo.GetAllData()
+
+	if err != nil {
+		log.Println(err)
+		return getItem, err
+	}
+	check := false
+	for _, item := range allItem {
+		if date == item.GetItemDate() {
+			check = true
+			getId = item.GetItemId()
+			break
+		}
+	}
+
+	if check {
+		// if item exist
+		getItem, err = s.ItemRepo.DeleteData(getId)
+		if err != nil {
+			log.Println(err)
+			return getItem, err
+		} else {
+			return getItem, nil
+		}
+	} else {
+		// not found
+		errs := errors.New("getting error when deleting item using date")
+		return getItem, errs
+	}
+}
